@@ -1,6 +1,6 @@
 {
   "author": "Alex Kahn",
-  "description": "Typed standing automations (\"if X do Y\") for AI-agent products \u2014 a closed trigger/action vocabulary drives the validator, LLM tool schemas, and a capped, cooldown-guarded firing engine, so the agent itself can author rules without hallucinating behavior.",
+  "description": "Typed standing automations (\"if X do Y\") for AI-agent products — a closed trigger/action vocabulary drives the validator, LLM tool schemas, and a capped, cooldown-guarded firing engine, so the agent itself can author rules without hallucinating behavior.",
   "devDependencies": {
     "@types/bun": "latest",
     "prettier": "3.5.3",
@@ -33,7 +33,7 @@
     "typecheck": "tsc --noEmit --project tsconfig.json"
   },
   "types": "./dist/src/index.d.ts",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "absolutejs": {
     "manifestContract": 1
   },
