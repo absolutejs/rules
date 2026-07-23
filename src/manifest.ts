@@ -18,7 +18,7 @@ const MAX_DAILY_CAP = 1000;
  * drift-checked against it and the default recipe assembles the policy
  * object. The store is the one pluggable position (`rules/store`). */
 export const manifest = defineManifest<RuleFirePolicy, RuleStore>()({
-  contract: 1,
+  contract: 2,
   identity: {
     accent: "#f97316",
     category: "ai",
@@ -90,6 +90,17 @@ export const manifest = defineManifest<RuleFirePolicy, RuleStore>()({
   tools: {
     list_rules: tool.runtime({
       annotations: { readOnlyHint: true },
+      authorization: {
+        approval: "never",
+        audience: "owner",
+        effects: ["read"],
+        requiredScopes: ["rules:read"],
+        resource: {
+          idField: "ownerId",
+          ownerIdField: "ownerId",
+          type: "rules-owner",
+        },
+      },
       description:
         "List one person's enabled automation rules, optionally narrowed to a single trigger. Returns each rule's trigger, action, params, and auto-send flag.",
       handler: async ({ ownerId, trigger }, store) =>
