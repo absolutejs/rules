@@ -3,7 +3,7 @@
 Typed standing automations ("if X do Y") for AI-agent products — safe for the
 **agent itself** to author.
 
-Built for the AbsoluteJS AI Studio.
+Used by the hosted AbsoluteJS.ai platform and available as a standalone rules package.
 
 ## The idea
 
@@ -30,44 +30,47 @@ drafting pipeline applies to generated copy. It never selects behavior.
 
 ```ts
 import {
-  createMemoryRuleStore,
-  createRuleEngine,
-  defineRuleVocabulary,
-  ruleToolSchemas,
-  validateRuleInput,
-} from "@absolutejs/rules";
+	createMemoryRuleStore,
+	createRuleEngine,
+	defineRuleVocabulary,
+	ruleToolSchemas,
+	validateRuleInput
+} from '@absolutejs/rules';
 
 const vocabulary = defineRuleVocabulary({
-  triggers: {
-    no_reply: {
-      label: "My outreach gets no reply",
-      paramsHelp: "days (default 4)",
-      params: { days: { type: "number", min: 1, max: 30, defaultValue: 4 } },
-    },
-  },
-  actions: {
-    draft_followup: {
-      label: "Draft a follow-up for my approval",
-      paramsHelp: "none (guidance styles the copy)",
-      capability: "outbound",
-    },
-  },
+	triggers: {
+		no_reply: {
+			label: 'My outreach gets no reply',
+			paramsHelp: 'days (default 4)',
+			params: {
+				days: { type: 'number', min: 1, max: 30, defaultValue: 4 }
+			}
+		}
+	},
+	actions: {
+		draft_followup: {
+			label: 'Draft a follow-up for my approval',
+			paramsHelp: 'none (guidance styles the copy)',
+			capability: 'outbound'
+		}
+	}
 });
 
 // 1. Validate anything that wants to become a rule (AI tool, REST, forms):
 const result = validateRuleInput(
-  vocabulary,
-  {
-    trigger: "no_reply",
-    action: "draft_followup",
-    triggerParams: { days: 45 },
-  },
-  {
-    canUseAction: (action) =>
-      memberTier !== "restricted" || "Outbound rules need a higher score.",
-    canAutoSend: () =>
-      memberTier === "trusted" || "Auto-send needs the trusted tier.",
-  },
+	vocabulary,
+	{
+		trigger: 'no_reply',
+		action: 'draft_followup',
+		triggerParams: { days: 45 }
+	},
+	{
+		canUseAction: (action) =>
+			memberTier !== 'restricted' ||
+			'Outbound rules need a higher score.',
+		canAutoSend: () =>
+			memberTier === 'trusted' || 'Auto-send needs the trusted tier.'
+	}
 );
 // result.ok.triggerParams.days === 30 (clamped)
 
@@ -76,30 +79,30 @@ const { createInput, updateInput, help } = ruleToolSchemas(vocabulary);
 
 // 3. Fire occurrences from your signal hooks / sweeps:
 const engine = createRuleEngine({
-  vocabulary,
-  store, // your RuleStore (drizzle, memory, …)
-  executeAction: async (rule, event, { autoSend }) => {
-    // queue a draft for approval, create a task, auto-execute…
-    return autoSend ? "executed" : "drafted";
-  },
+	vocabulary,
+	store, // your RuleStore (drizzle, memory, …)
+	executeAction: async (rule, event, { autoSend }) => {
+		// queue a draft for approval, create a task, auto-execute…
+		return autoSend ? 'executed' : 'drafted';
+	}
 });
 
 await engine.fire(
-  ownerId,
-  {
-    trigger: "no_reply",
-    entityId: `noreply:${matchId}`,
-    context: "no reply from Brendan in 5 days",
-    signal: { days: 5 },
-  },
-  {
-    killSwitch: false,
-    cooldownDays: 3,
-    maxFiringsPerDay: 10,
-    maxAutoPerDay: 3,
-    canUseAction: () => true,
-    canAutoSend: () => true,
-  },
+	ownerId,
+	{
+		trigger: 'no_reply',
+		entityId: `noreply:${matchId}`,
+		context: 'no reply from Brendan in 5 days',
+		signal: { days: 5 }
+	},
+	{
+		killSwitch: false,
+		cooldownDays: 3,
+		maxFiringsPerDay: 10,
+		maxAutoPerDay: 3,
+		canUseAction: () => true,
+		canAutoSend: () => true
+	}
 );
 ```
 
