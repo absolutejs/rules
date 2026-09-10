@@ -2,6 +2,7 @@
   "author": "Alex Kahn",
   "description": "Typed standing automations (\"if X do Y\") for AI-agent products — a closed trigger/action vocabulary drives the validator, LLM tool schemas, and a capped, cooldown-guarded firing engine, so the agent itself can author rules without hallucinating behavior.",
   "devDependencies": {
+    "@absolutejs/changelog": "^0.1.2",
     "@types/bun": "latest",
     "prettier": "3.5.3",
     "typescript": "5.8.3"
@@ -21,16 +22,19 @@
     "url": "https://github.com/absolutejs/rules/issues"
   },
   "files": [
-    "dist",
+    "CHANGELOG.md",
+    "LICENSE",
     "README.md",
-    "LICENSE"
+    "changelog.json",
+    "dist"
   ],
   "scripts": {
     "build": "rm -rf dist && bun build src/index.ts src/manifest.ts --outdir dist --root ./src --target=bun && tsc --emitDeclarationOnly --project tsconfig.json && absolute-manifest emit",
     "format": "prettier --write \"./**/*.{ts,json,md}\"",
     "release": "bun run format && bun run test && bun run build && bun publish",
     "test": "bun test",
-    "typecheck": "tsc --noEmit --project tsconfig.json"
+    "typecheck": "tsc --noEmit --project tsconfig.json",
+    "check:package": "absolute-changelog check"
   },
   "types": "./dist/src/index.d.ts",
   "version": "0.1.0",
@@ -51,7 +55,7 @@
     "./manifest.json": "./dist/manifest.json"
   },
   "dependencies": {
-    "@absolutejs/manifest": "^0.4.0",
+    "@absolutejs/manifest": "^0.9.0",
     "@sinclair/typebox": "^0.34.0"
   }
 }
